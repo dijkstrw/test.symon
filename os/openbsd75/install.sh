@@ -8,7 +8,7 @@ ENV_NAME=openbsd75
 ISO_SOURCE=https://cdn.openbsd.org/pub/OpenBSD/7.5/amd64/install75.iso
 
 DISK=${ROOT}/disks/${ENV_NAME}.qcow2
-ISO_FILE=${ROOT}iso/${ENV_NAME}.iso
+ISO_FILE=${ROOT}/iso/${ENV_NAME}.iso
 SSHID_FILE=${ROOT}/ssh/id
 
 if [ ! -d ${ROOT} ]; then
