@@ -1,5 +1,5 @@
 #
-# run script for OpenBSD 7.5
+# run script for NetBSD 10.0
 #
 
 # Objective: make a repeatable environment in qemu where we can test
@@ -8,7 +8,7 @@ COMMAND=$1
 shift
 ARGS=$@
 
-ENV_NAME=openbsd75
+ENV_NAME=netbsd100
 
 DISK=${ROOT}/disks/${ENV_NAME}.qcow2
 ISO_FILE=${ROOT}/iso/${ENV_NAME}.iso

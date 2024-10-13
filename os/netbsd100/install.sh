@@ -25,6 +25,8 @@ if [ ! -f ${SSHID_FILE} ]; then
     ssh-keygen -f ${SSHID_FILE} -P ""
 fi
 
+SSHID_PUB=`cat ${SSHID_FILE}.pub`
+
 SEXPECT_SOCKFILE=/tmp/sexpect-$$.sock
 SEXPECT_LOGFILE=/tmp/sexpect-$$.log
 
@@ -102,12 +104,12 @@ qexpect expect "login:"
 qexpect send -enter "root"
 qexpect expect "Password:"
 qexpect send -enter "root"
-SSHPUB=`cat ${SSHID_FILE}.pub`
-qexpect send "
-echo -e "${SSHPUB}\n" >> .ssh/authorized_keys
-export PKG_PATH=http://cdn.NetBSD.org/pub/pkgsrc/packages/NetBSD/x86_64/10.0
-pkg_add rrdtool
-shutdown -hp now
-"
+qexpect expect "netbsd100#"
+qexpect send -enter "mkdir .ssh; chmod go-rwx .ssh; echo -e '${SSHID_PUB}\n' >> .ssh/authorized_keys"
+qexpect expect "netbsd100#"
+qexpect send -enter "pkg_add https://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD/x86_64/10.0/All/rrdtool-1.8.0nb9.tgz"
+qexpect expect "netbsd100#"
+qexpect send -enter "shutdown -hp now"
+
 qexpect kill
 qexpect wait
