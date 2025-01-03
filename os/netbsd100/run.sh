@@ -17,14 +17,14 @@ SSHID_FILE=${ROOT}/ssh/id
 TERM=xterm
 SSH_HOST=root@127.0.0.1
 SSH_CMD="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p 7022 -i ${SSHID_FILE}"
-SCP_CMD="scp  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -P 7022 -i ${SSHID_FILE}"
+SCP_CMD="scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -P 7022 -i ${SSHID_FILE}"
 
 case ${COMMAND} in
     start)
         qemu-system-x86_64 -nographic -cpu host -machine q35,accel=kvm -m 2048 -hda ${DISK} -chardev socket,id=char0,port=7021,server=on,wait=off,telnet=on,logfile=/tmp/serial.log,signal=off,mux=on -serial chardev:char0 -monitor chardev:char0 -netdev user,id=n0,hostfwd=tcp:127.0.0.1:7022-:22 -device e1000,netdev=n0
         ;;
     stop)
-        ${SSH_CMD} ${SSH_HOST} "shutdown -hp now"
+        ${SSH_CMD} ${SSH_HOST} "/sbin/poweroff now"
         ;;
     connect)
         ${SSH_CMD} ${SSH_HOST}
@@ -43,6 +43,9 @@ case ${COMMAND} in
         echo rrds are: \$rrds
         ./symux/c_smrrds.sh \$rrds
         ./symux/symux -d -f "/tmp/symux.conf" &
+        cat /var/run/symux.fifo &
+        sleep 10
+        pkill cat
         sleep 30
         pkill symon
         pkill symux
