@@ -33,6 +33,7 @@ case ${COMMAND} in
         ${SCP_CMD} -r ${ROOT}/symon ${SSH_HOST}:/tmp
         ${SCP_CMD} ${ROOT}/os/${ENV_NAME}/sy* ${SSH_HOST}:/tmp
         ${SSH_CMD} ${SSH_HOST} << EOF
+        useradd -d /tmp/symon/rrds symux
         cd /tmp/symon
         bmake
         cat symux/symux.cat8
@@ -41,6 +42,7 @@ case ${COMMAND} in
         rrds=\$(./symux/symux -l -f /tmp/symux.conf)
         echo rrds are: \$rrds
         ./symux/c_smrrds.sh \$rrds
+        chown -R symux /tmp/symon/rrds
         ./symux/symux -d -f "/tmp/symux.conf" &
         sleep 2
         cat /var/run/symux.fifo &

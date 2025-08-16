@@ -36,6 +36,7 @@ case ${COMMAND} in
         ${SSH_CMD} ${SSH_HOST} << EOF
         kldload pf || true
         pfctl -e || true
+        pw useradd -d /tmp/symon/rrds -n _symux
         cd /tmp/symon
         make
         cat symux/symux.cat8
@@ -44,6 +45,7 @@ case ${COMMAND} in
         rrds=\$(./symux/symux -l -f /tmp/symux.conf)
         echo rrds are: \$rrds
         ./symux/c_smrrds.sh \$rrds
+        chown -R _symux /tmp/symon/rrds
         ./symux/symux -d -f "/tmp/symux.conf" &
         cat /var/run/symux.fifo &
         sleep 10
